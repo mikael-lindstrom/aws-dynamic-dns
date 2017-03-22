@@ -69,7 +69,7 @@ func (r53 *Route53) getRoute53RecordIp() (route53Ip string) {
 	exitOnError(err)
 
 	if resp.RecordData == nil {
-		fmt.Println("Environment variable '%s' not set\n", "asdf")
+		// No record currently exists
 		return ""
 	}
 	return aws.StringValue(resp.RecordData[0])
@@ -77,7 +77,7 @@ func (r53 *Route53) getRoute53RecordIp() (route53Ip string) {
 
 func (r53 *Route53) updateRoute53RecordIp(publicIp string) {
 	recordSet := &route53.ResourceRecordSet{
-		Name: aws.String("k8s.limpan.io."),
+		Name: aws.String(r53.domain),
 		Type: aws.String("A"),
 		TTL:  aws.Int64(300),
 		ResourceRecords: []*route53.ResourceRecord{
