@@ -2,3 +2,4 @@
 _dist/
 bin/
 rootfs/aws-dynamic-dns
+kubernetes/*secret.yaml

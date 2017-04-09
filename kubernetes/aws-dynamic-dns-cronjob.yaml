@@ -1,0 +1,39 @@
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: aws-dynamic-dns-cronjob
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 60
+      template:
+        spec:
+          containers:
+          - name: aws-dynamic-dns
+            image: lindstrom/aws-dynamic-dns-arm:0.0.3
+            env:
+              - name: AWS_ACCESS_KEY_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: aws-dynamic-dns-secret
+                    key: aws_access_key
+              - name: AWS_SECRET_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: aws-dynamic-dns-secret
+                    key: aws_secret_key
+              - name: HOSTED_ZONE_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: aws-dynamic-dns-secret
+                    key: hosted_zone_id
+              - name: DNS_NAME
+                valueFrom:
+                  secretKeyRef:
+                    name: aws-dynamic-dns-secret
+                    key: dns_name
+          restartPolicy: Never
